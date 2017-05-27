@@ -242,7 +242,6 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
     ui->vSlider->setRange(0,time_interval*10);
     ui->vSlider->setValue(time_interval*5);
     connect(ui->vSlider, SIGNAL(valueChanged(int)), this, SLOT(SetGain(int)));
-    //connect(ui->vSlider, &QSlider::valueChanged, this, &MWindow::SetGain);
 
     setWindowTitle("Audio player");
 
@@ -312,17 +311,6 @@ void MWindow::DelItems()
     ptr_item.clear();
 }
 //--------------------------------------------------------------------------------
-/*
-void MWindow::setModePlay(bool pmode)//stream or sound
-{
-    isStream = pmode;
-}
-//--------------------------------------------------------------------------------
-bool MWindow::getModePlay()
-{
-    return isStream;
-}
-*/
 //--------------------------------------------------------------------------------
 FMOD_RESULT MWindow::CheckFMOD(FMOD_RESULT res)
 {
@@ -572,34 +560,6 @@ void MWindow::MkList()
     tbl->show();
 }
 //--------------------------------------------------------------------------------
-/*
-void MWindow::add_list_media()
-{
-    QStringList *ls = new QStringList();
-    //ls->clear();
-    *ls = QFileDialog::getOpenFileNames(this,
-                                        tr("Add Files"),
-                                        NULL,
-                                        tr("Music (*.mp3 *.MP3 *.mpga *.wav *.WAV *.flac *.wma *.ogg)"));
-    if (!ls->size()) {
-        delete ls;
-        return;
-    }
-    bool play=false;
-    if (!list.size()) play=true;
-    list += *ls;
-    delete ls;
-
-    MkList();
-
-    if (play) {
-        list_ind = 0;
-        filename = list.at(list_ind);
-        UpdateStatus();
-        play_media();
-    } else tbl->selectRow(list_ind);
-}
-*/
 //--------------------------------------------------------------------------------
 void MWindow::list_media()
 {
@@ -777,19 +737,7 @@ void MWindow::play_media()
 
                 f_result = audio->playSound((FMOD_CHANNELINDEX)1, sound, true, &channel);
                 CheckFMOD(f_result);
-                /*
-                FMOD_TAG tag;
-                if (sound->getTag(0, -1, &tag) == FMOD_OK) {
-                    if (tag.datatype == FMOD_TAGDATATYPE_STRING) {
-                        printf("%s = %s (%d bytes)\n", tag.name, (char *)tag.data, tag.datalen);
-                    } else if (tag.type == FMOD_TAGTYPE_FMOD) {
-                        if (!strcmp(tag.name, "Sample Rate Change")) {
-                            channel->setFrequency(*((float *)tag.data));
-                        }
-                    }
 
-                }
-                */
                 if (dsp) {
                     if (fft) {
                         fft->release();
