@@ -18,8 +18,6 @@ bool d_s_p=false;//without dsp effects
         return 1;
     }
 
-//    pid_t main_pid = getpid();
-//    cout << "Main pid=" << main_pid << endl;
 
     setlocale(LC_ALL,"UTF8");
 
