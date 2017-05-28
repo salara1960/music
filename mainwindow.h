@@ -133,8 +133,6 @@ public:
     void MkList();
     FMOD_RESULT CheckFMOD(FMOD_RESULT);
     void DelItems();
-/*    void setModePlay(bool);
-    bool getModePlay();*/
 
 signals:
     void cstoped();
@@ -148,7 +146,6 @@ public slots:
     void save_list();
     void open_list();
     void clear_media();
-    //void add_list_media();
     void list_repeat();
     void play_media();
     void stop_media();

@@ -39,7 +39,7 @@ bool d_s_p=false;//without dsp effects
 
         music.exec();
     }
-    // Блок обработки ошибок, (позиционный код):
+    // Error handler block:
     // - 0x01 - memory error
     // - 0x02 - timer error
     // - 0x04 - Qstring::toInt error

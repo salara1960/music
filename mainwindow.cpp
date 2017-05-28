@@ -24,7 +24,6 @@ void mkstr(int n, char *s)
 #ifdef TRACE
 static QByteArray sps="";
 //                          class TLog
-// Конструктор
 TrLog::TrLog(const char *fileName, const char *funcName, int lineNumber)
 {
     _fileName = fileName;
@@ -33,7 +32,6 @@ TrLog::TrLog(const char *fileName, const char *funcName, int lineNumber)
     sps.append("  ");
 
 }
-// Деструктор
 TrLog::~TrLog()
 {
     sps.resize(sps.length() -2);
@@ -87,7 +85,6 @@ void ContMenu::slotAct(QAction *pAction)
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 //                         class MWindow
-// Конструктор
 MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(new Ui::MWindow)
 {
 #ifdef TRACE
@@ -247,7 +244,6 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
 
 }
 //--------------------------------------------------------------------------------
-// Деструктор
 MWindow::~MWindow()
 {
     if (fft) fft->release();
@@ -357,14 +353,12 @@ void MWindow::About()
     QMessageBox::information(this,"About this",trUtf8(st));
 }
 //--------------------------------------------------------------------------------
-// Конструктор класса ошибок с одним параметром
 MWindow::TheError::TheError(int err)
 {
     code = err;
     fmod_code = FMOD_OK;
 }
 //--------------------------------------------------------------------------------
-// Конструктор класса ошибок с двумя параметрами
 MWindow::TheError::TheError(int err, FMOD_RESULT ferr)
 {
     code = err;
@@ -532,8 +526,8 @@ void MWindow::MkList()
     tbl->setGeometry(0, ui->menubar->geometry().height()-1, max_width, rr->height()-80);
     delete rr;
 
-    tbl->setRowCount(list.size());//количество строк
-    tbl->setColumnCount(1); //количество столбцов
+    tbl->setRowCount(list.size());
+    tbl->setColumnCount(1);
     tbl->horizontalHeader()->hide();
     tbl->verticalHeader()->hide();
     QString *tmp = new QString();
