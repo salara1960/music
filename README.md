@@ -51,7 +51,8 @@ Support next play effects (DSP type):
 ## Start application
 
 ./music param1 param2
-where
-param1 - stream or sound
-param2 - dsp
+
+where,
+* param1 - stream or sound
+* param2 - dsp
 
