@@ -4,8 +4,8 @@
 int main(int argc, char *argv[])
 {
 int c_err=0;
-bool pmode=true;//stream mode
-bool d_s_p=false;//without dsp effects
+bool pmode=false;//sound mode
+bool d_s_p=true;//with dsp effects
 
 #ifdef Q_WS_X11
     bool useGUI = getenv("DISPLAY") != 0;

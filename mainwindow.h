@@ -46,6 +46,7 @@
     #include <QtWidgets/QTableWidgetItem>
     #include <QtWidgets/QPushButton>
     #include <QtWidgets/QTextEdit>
+    #include <QtWidgets/QHeaderView>
 #endif
 
 #include <iostream>
@@ -162,7 +163,7 @@ public slots:
     void select_cont_menu(int);
 
 private:
-    const char *ver = "2.2";
+    const char *ver = "2.3";
     const char *ttip_head = "<html><head/><body><p><span style='font-size:8pt; font-style:italic; color:#0000ff';>";
     const char *ttip_tail = "</span></p></body></html";
     const float echo_delay = 250.0;//250ms

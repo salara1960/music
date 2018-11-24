@@ -523,13 +523,15 @@ void MWindow::MkList()
 
     QRect *rr = new QRect (this->geometry());
     int max_width = rr->width()-20;
-    tbl->setGeometry(0, ui->menubar->geometry().height()-1, max_width, rr->height()-80);
+    tbl->setGeometry(0, ui->menubar->geometry().height()-1, max_width, rr->height()-96);//-86);//80
     delete rr;
 
     tbl->setRowCount(list.size());
     tbl->setColumnCount(1);
-    tbl->horizontalHeader()->hide();
-    tbl->verticalHeader()->hide();
+    tbl->horizontalHeader()->setVisible(false);
+    tbl->verticalHeader()->setVisible(false);
+    //tbl->horizontalHeader()->hide();
+    //tbl->verticalHeader()->hide();
     QString *tmp = new QString();
     QStringList *lt = new QStringList();
     tbl->resizeRowsToContents();
