@@ -3,9 +3,9 @@
 
 int main(int argc, char *argv[])
 {
-int c_err=0;
-bool pmode=false;//sound mode
-bool d_s_p=true;//with dsp effects
+int c_err = 0;
+bool pmode = false;//sound mode
+bool d_s_p = true;//with dsp effects
 
 #ifdef Q_WS_X11
     bool useGUI = getenv("DISPLAY") != 0;
@@ -33,8 +33,6 @@ bool d_s_p=true;//with dsp effects
 
         MWindow wnd(NULL, pmode, d_s_p);
 
-        //wnd.setModePlay(pmode);
-
         wnd.show();
 
         music.exec();
@@ -49,7 +47,7 @@ bool d_s_p=true;//with dsp effects
     // - 0x40 - old version fmodex
     catch (MWindow::TheError (er)) {
         c_err = er.code;
-        if ((c_err>0) && (c_err<=0x40)) {
+        if ((c_err > 0) && (c_err <= 0x40)) {
             if (c_err & 1) {
                 perror("Error calloc function\n");
                 perror(strerror(errno));

@@ -1,10 +1,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-//#define QT4
-
 //#define TRACE
 //#define DBG
+
+#include <iostream>
+#include <string.h>
+#include <time.h>
+#include <arpa/inet.h>
+
+#include <fmodex/fmod.hpp>
+#include <fmodex/fmod_errors.h>
+#include <fmodex/fmod_dsp.h>
+#include <fmodex/api/fmod_event.hpp>
 
 #include <QApplication>
 #include <QMouseEvent>
@@ -16,48 +24,18 @@
 #include <QMutex>
 #include <QProgressBar>
 #include <QFileDialog>
-
-#include <fmodex/fmod.hpp>
-#include <fmodex/fmod_errors.h>
-#include <fmodex/fmod_dsp.h>
-#include <fmodex/api/fmod_event.hpp>
-
-#ifdef QT4
-    #include <QMainWindow>
-    #include <QDialog>
-    #include <QDialogButtonBox>
-    #include <QLineEdit>
-    #include <QMessageBox>
-    #include <QTableWidget>
-    #include <QTableWidgetItem>
-    #include <QPushButton>
-    #include <QAudioOutput>
-    #include <QAudioFormat>
-    #include <phonon/MediaObject>
-#else
-    #include <QWidget>
-    #include <QtWidgets/QMainWindow>
-    #include <QtWidgets/QDialog>
-    #include <QtWidgets/QDialogButtonBox>
-    #include <QtWidgets/QLineEdit>
-    #include <QtWidgets/QMessageBox>
-    #include <QtWidgets/QTableWidget>
-    #include <QtWidgets/QTableView>
-    #include <QtWidgets/QTableWidgetItem>
-    #include <QtWidgets/QPushButton>
-    #include <QtWidgets/QTextEdit>
-    #include <QtWidgets/QHeaderView>
-#endif
-
-#include <iostream>
-#include <string.h>
-#include <time.h>
-
-//  for PID
-//#include <sys/types.h>
-//#include <unistd.h>
-#include <arpa/inet.h>
-
+#include <QWidget>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QHeaderView>
 
 //********************************************************************************
 
@@ -140,7 +118,6 @@ signals:
     void contmenu(int);
 
 public slots:
-
     void About();
     void list_media();
     void list_dir();
@@ -163,7 +140,8 @@ public slots:
     void select_cont_menu(int);
 
 private:
-    const char *ver = "2.3";
+    //const char *ver = "2.3";
+    const char *ver = "2.3.1";//11.12.2018
     const char *ttip_head = "<html><head/><body><p><span style='font-size:8pt; font-style:italic; color:#0000ff';>";
     const char *ttip_tail = "</span></p></body></html";
     const float echo_delay = 250.0;//250ms
@@ -182,8 +160,8 @@ private:
 
     FMOD_RESULT f_result;
     FMOD::System *audio;
-    FMOD::Sound *sound;// sound
-    FMOD::Channel *channel;// sound channel
+    FMOD::Sound *sound;
+    FMOD::Channel *channel;
     FMOD_CREATESOUNDEXINFO *exinfo;
     FMOD::DSP *fft;
     bool dsp;
