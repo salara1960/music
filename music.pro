@@ -8,10 +8,10 @@ QT += widgets core gui
 
 QMAKE_CXX += -std=gnu++11 -O2
 
-INCLUDEPATH += /usr/include/modex/
-LIBS += -L/usr/lib -lfmodex
+INCLUDEPATH += /usr/include/fmodex/
+LIBS += -L/usr/lib -lfmodex64
 
-TARGET = music
+TARGET = qmusic
 TEMPLATE = app
 
 CONFIG += exception

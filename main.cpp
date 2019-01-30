@@ -63,9 +63,9 @@ bool d_s_p = true;//with dsp effects
             if (c_err & 0x40) {
                 char tmps[32]={0};
                 cerr << "FMODex: You have old version :";
-                mkstr(htonl((int)er.fmod_code), tmps);
+                mkstr(htonl((int)er.fmod_code) , tmps);
                 cerr << tmps << ", need version : ";
-                mkstr(htonl((int)FMOD_VERSION), tmps);
+                mkstr(htonl((int)FMOD_VERSION) , tmps);
                 cerr << tmps << endl;
             }
         } else cerr << "Unknown Error (" << c_err << ")\n";

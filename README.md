@@ -50,9 +50,10 @@ Support next play effects (DSP type):
 
 ## Start application
 
-./music param1 param2
+./music param1 param2 param3
 
 where,
 * param1 - stream or sound
 * param2 - dsp
+* param3 - -style Fusion (optional parameter)
 

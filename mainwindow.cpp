@@ -8,13 +8,13 @@ void mkstr(int n, char *s)
 {
     if (!s) return;
 
-    int sz = sizeof(int);
-    char *sta = (char *)calloc(1, sz << 2);// *4
+    size_t sz = sizeof(int);
+    char *sta = static_cast<char *>(calloc(1, sz << 2));// *4
     if (sta) {
         memset(s, 0, strlen(s));
         unsigned char mas[sz];
         memcpy(mas, &n, sz);
-        for (int i = 0; i < sz; i++)
+        for (size_t i = 0; i < sz; i++)
             if (mas[i]) sprintf(sta+strlen(sta), "%x.", mas[i]);
         memcpy(s, sta, strlen(sta));
         free(sta);
@@ -93,20 +93,20 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
     this->setFixedSize(this->size());
 
     MyError = 0;      //Code error for catch block
-    st = NULL;        //pointer to temp char_string
+    st = nullptr;        //pointer to temp char_string
 
     filename.clear();
     list.clear();
     list_add = pause = mute = repeat = false;
     isStream = pm;
-    audio = NULL;
-    sound = NULL;
-    channel = NULL;
-    fft = NULL;
+    audio = nullptr;
+    sound = nullptr;
+    channel = nullptr;
+    fft = nullptr;
     fft_ind = 0;
     //fft_freq = fft_type = 0.0f;
-    dsp_list = NULL;
-    dsp_name = NULL;
+    dsp_list = nullptr;
+    dsp_name = nullptr;
     dsp = dp;
     if (dsp) {
         dsp_list = new QList<FMOD_DSP_TYPE>;
@@ -143,19 +143,19 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
     }
     ptr_item.clear();
 
-    tbl = NULL;
+    tbl = nullptr;
 
     list_ind = 0;
     chan_pos = 0;
     end_pos = chan_pos -1;
-    exinfo = NULL;
+    exinfo = nullptr;
     gain = 0.5;
     sz22x22 = new QSize (19, 19);
     sz16x16 = new QSize (16, 16);
 
     ui->setupUi(this);
 
-    st = (char *)calloc(1, max_st);//get memory for temp char_string and fill zero
+    st = static_cast<char *>(calloc(1, max_st));//get memory for temp char_string and fill zero
     if (!st) {
         MyError |= 1;//memory error
         throw TheError(MyError);
@@ -211,14 +211,14 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
         unsigned int vr;
         f_result = audio->getVersion(&vr);
         CheckFMOD(f_result);
-        fmod_ver = vr;
+        fmod_ver = static_cast<int>(vr);
         if (vr < FMOD_VERSION) {
             //cerr << "FMODex: You have old version :" << vr << ", need version : " << FMOD_VERSION << endl;
             MyError |= 0x40;//FMOD error
-            throw TheError(MyError, (FMOD_RESULT)vr);
+            throw TheError(MyError, static_cast<FMOD_RESULT>(vr));
         }
 
-        f_result = audio->init(2, FMOD_INIT_NORMAL, 0);//FMOD_INIT_SOFTWARE_HRTF//FMOD_INIT_NORMAL
+        f_result = audio->init(2, FMOD_INIT_NORMAL, nullptr);//FMOD_INIT_SOFTWARE_HRTF//FMOD_INIT_NORMAL
         CheckFMOD(f_result);
         /* f_result = audio->createDSPByType(dsp_list.at(dsp_ind), &fft);
         CheckFMOD(f_result);
@@ -272,7 +272,7 @@ void MWindow::select_cont_menu(int sind)
             channel->setPaused(true);
             if (fft) {
                 fft->release();
-                fft = NULL;
+                fft = nullptr;
             }
             f_result = audio->createDSPByType(dsp_list->at(dsp_ind), &fft);
             CheckFMOD(f_result);
@@ -280,7 +280,7 @@ void MWindow::select_cont_menu(int sind)
                 f_result = fft->setParameter(FMOD_DSP_ECHO_DELAY, echo_delay);//250ms
                 CheckFMOD(f_result);
             }
-            f_result = channel->addDSP(fft, 0);
+            f_result = channel->addDSP(fft, nullptr);
             CheckFMOD(f_result);
             fft->setActive(true);
             channel->setPaused(pause);
@@ -318,12 +318,25 @@ FMOD_RESULT MWindow::CheckFMOD(FMOD_RESULT res)
 //--------------------------------------------------------------------------------
 void MWindow::About()
 {
-    sprintf(st, "\nMusic player (Qt + FMODex API v.");
-    int v = htonl(fmod_ver);
-    int dl = sizeof(int);
+    sprintf(st, "\nMusic player version %s\n", ver);
+
+
+    sprintf(st+strlen(st), "    Mode play ");
+    if (isStream) sprintf(st+strlen(st), "'Stream'");
+            else  sprintf(st+strlen(st), "'Sound'");
+
+    if (dsp) {
+        QByteArray *darr = new QByteArray(dsp_name->at(dsp_ind).toLocal8Bit());
+        sprintf(st+strlen(st), "\n    DSP '%s'\n", darr->data());
+        delete darr;
+    }
+
+    sprintf(st+strlen(st), "used : Qt v.%s + FMODex API v.", QT_VERSION_STR);
+    uint32_t v = htonl(static_cast<uint32_t>(fmod_ver));
+    size_t dl = sizeof(int);
     unsigned char mas[dl], fst = 1;
     memcpy(&mas[0], &v, dl);
-    for (int i = 0; i < dl; i++) {
+    for (size_t i = 0; i < dl; i++) {
         if (mas[i]) {
             fst = 0;
             sprintf(st+strlen(st), "%x.", mas[i]);
@@ -331,17 +344,11 @@ void MWindow::About()
             if (!fst) sprintf(st+strlen(st), "%x.", mas[i]);
         }
     }
-    sprintf(st+strlen(st), ")\n");
-    if (isStream) sprintf(st+strlen(st), "Stream");
-            else  sprintf(st+strlen(st), "Sound");
-    sprintf(st+strlen(st), " mode play\n");
-    if (dsp) {
-        QByteArray *darr = new QByteArray(dsp_name->at(dsp_ind).toLocal8Bit());
-        sprintf(st+strlen(st), "DSP %s\n", darr->data());
-        delete darr;
-    }
-    sprintf(st+strlen(st), "Version %s", ver);
+    sprintf(st+strlen(st), "\n");
+
     QMessageBox::information(this, "About this", trUtf8(st));
+
+
 }
 //--------------------------------------------------------------------------------
 MWindow::TheError::TheError(int err)
@@ -362,14 +369,14 @@ void MWindow::timerEvent(QTimerEvent *event)
         channel->getPosition(&chan_pos, FMOD_TIMEUNIT_MS);
         bool pl; channel->isPlaying(&pl);
         if ((pl) && (!pause)) {
-            int min = (end_pos/time_interval) - start_play_tick;
-            int chas = min/60;
+            uint32_t min = (end_pos/static_cast<uint32_t>(time_interval) ) - start_play_tick;
+            uint32_t chas = min/60;
             min %= 60;
             sprintf(st, "%02d:%02d", chas, min);
             ui->label->setText(tr(st));
 
             start_play_tick++;
-            ui->hSlider->setValue(start_play_tick);
+            ui->hSlider->setValue( static_cast<int>(start_play_tick) );
         }
         if (chan_pos>=end_pos) {
             stop_media();
@@ -388,7 +395,7 @@ void MWindow::clear_media()
         DelItems();
         tbl->hide();
         delete tbl;
-        tbl = NULL;
+        tbl = nullptr;
     }
     list.clear();
     list_ind = 0;
@@ -423,7 +430,7 @@ void MWindow::open_list()
     QString *nm = new QString();
     *nm = QFileDialog::getOpenFileName(this,
                                        tr("Open PlayList"),
-                                       NULL,
+                                       nullptr,
                                        tr("PlayList (*.plt)"));
     if (!nm->size()) {
         ui->MStatus->setText(tr("No playlist file selected"));
@@ -433,8 +440,8 @@ void MWindow::open_list()
 
     QFile fil(*nm);
     QStringList *ls = new QStringList();
-    char *str = (char *)calloc(1, 256);
-    int dl;
+    char *str = static_cast<char *>(calloc(1, 256));
+    qint64 dl;
     bool flag = fil.open(QIODevice::ReadOnly | QIODevice::Text);
     if (flag) {
         while (!fil.atEnd()) {
@@ -496,7 +503,7 @@ void MWindow::MkList()
     if (tbl) {
         DelItems();
         delete tbl;
-        tbl = NULL;
+        tbl = nullptr;
     }
     tbl = new QTableWidget(this);
 
@@ -550,7 +557,7 @@ void MWindow::list_media()
     QStringList *ls = new QStringList();
     *ls = QFileDialog::getOpenFileNames(this,
                                         tr("Open Files"),
-                                        NULL,
+                                        nullptr,
                                         tr("Music (*.mp3 *.MP3 *.mpga *.wav *.WAV *.flac *.FLAC *.wma *.WMA *.ogg *.OGG)"));
     if (!ls->size()) {
         ui->MStatus->setText(tr("No file selected"));
@@ -691,8 +698,8 @@ void MWindow::prev_media()
 //--------------------------------------------------------------------------------
 void MWindow::GotoPos(int pos)
 {
-    start_play_tick = pos;
-    channel->setPosition(start_pos + (pos*time_interval), FMOD_TIMEUNIT_MS);
+    start_play_tick = static_cast<uint32_t>(pos);
+    channel->setPosition(start_pos + ( static_cast<uint32_t>(pos) * static_cast<uint32_t>(time_interval)), FMOD_TIMEUNIT_MS);
 //audio->update();
 }
 //--------------------------------------------------------------------------------
@@ -714,18 +721,18 @@ void MWindow::play_media()
             QByteArray namef(filename.toLocal8Bit());// namef.clear(); namef.append(filename);
             char *uk = namef.data();
             if (!isStream)
-                f_result = audio->createSound((const char *)uk, FMOD_SOFTWARE, exinfo, &sound);
+                f_result = audio->createSound(static_cast<const char *>(uk), FMOD_SOFTWARE, exinfo, &sound);
             else
-                f_result = audio->createStream((const char *)uk,FMOD_SOFTWARE, exinfo, &sound);
+                f_result = audio->createStream(static_cast<const char *>(uk),FMOD_SOFTWARE, exinfo, &sound);
             if (CheckFMOD(f_result) == FMOD_OK) {
 
-                f_result = audio->playSound((FMOD_CHANNELINDEX)1, sound, true, &channel);
+                f_result = audio->playSound( static_cast<FMOD_CHANNELINDEX>(1), sound, true, &channel);
                 CheckFMOD(f_result);
 
                 if (dsp) {
                     if (fft) {
                         fft->release();
-                        fft = NULL;
+                        fft = nullptr;
                     }
                     f_result = audio->createDSPByType(dsp_list->at(dsp_ind), &fft);
                     CheckFMOD(f_result);
@@ -733,7 +740,7 @@ void MWindow::play_media()
                         f_result = fft->setParameter(FMOD_DSP_ECHO_DELAY, echo_delay);//250ms
                         CheckFMOD(f_result);
                     }
-                    f_result = channel->addDSP(fft, 0);
+                    f_result = channel->addDSP(fft, nullptr);
                     CheckFMOD(f_result);
                     fft->setActive(true);
                     ui->pushButtonDSP->setToolTip(ttip_head + dsp_name->at(dsp_ind) + ttip_tail);
@@ -747,7 +754,7 @@ void MWindow::play_media()
                 sound->getLength(&end_pos, FMOD_TIMEUNIT_MS);
                 ui->pushButtonPlay->setIconSize(*sz22x22);
                 ui->pushButtonStop->setIconSize(*sz16x16);
-                ui->hSlider->setRange(0, end_pos/time_interval);
+                ui->hSlider->setRange(0, (static_cast<int>(end_pos))/time_interval);
                 start_play_tick = 0;
 
                 connect(ui->hSlider, SIGNAL(valueChanged(int)), this, SLOT(GotoPos(int)));
@@ -772,14 +779,14 @@ void MWindow::stop_media()
     if (dsp) {
         if (fft) {
             fft->release();
-            fft = NULL;
+            fft = nullptr;
         }
     }
     channel->stop();
-    channel = NULL;
+    channel = nullptr;
     if (sound) {
         sound->release();
-        sound = NULL;
+        sound = nullptr;
     }
     pause = mute = false;
 
