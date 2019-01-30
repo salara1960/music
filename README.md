@@ -21,7 +21,7 @@ Support next file types:
 Support two mode play:
 ```
 - stream (play from file on fly)
-- sound (get media from file to memory buffer and when play)
+- sound (get media from file to memory buffer and then play)
 ```
 
 Support next play effects (DSP type):
