@@ -93,7 +93,7 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
     this->setFixedSize(this->size());
 
     MyError = 0;      //Code error for catch block
-    st = nullptr;        //pointer to temp char_string
+    st = nullptr;     //pointer to temp char_string
 
     filename.clear();
     list.clear();
@@ -104,7 +104,6 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
     channel = nullptr;
     fft = nullptr;
     fft_ind = 0;
-    //fft_freq = fft_type = 0.0f;
     dsp_list = nullptr;
     dsp_name = nullptr;
     dsp = dp;
@@ -121,7 +120,6 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
                   << FMOD_DSP_TYPE_PARAMEQ
                   << FMOD_DSP_TYPE_FLANGE
                   << FMOD_DSP_TYPE_PITCHSHIFT
-                  //<< FMOD_DSP_TYPE_OSCILLATOR
                   << FMOD_DSP_TYPE_SFXREVERB
                   << FMOD_DSP_TYPE_TREMOLO;
         dsp_name = new QStringList();
@@ -136,7 +134,6 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
                   << "Parameq"
                   << "Flange"
                   << "PitchShift"
-                  //<< "Oscillator"
                   << "SfxReverb"
                   << "Tremolo";
         dsp_ind = 0;
@@ -213,21 +210,13 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
         CheckFMOD(f_result);
         fmod_ver = static_cast<int>(vr);
         if (vr < FMOD_VERSION) {
-            //cerr << "FMODex: You have old version :" << vr << ", need version : " << FMOD_VERSION << endl;
             MyError |= 0x40;//FMOD error
             throw TheError(MyError, static_cast<FMOD_RESULT>(vr));
         }
 
         f_result = audio->init(2, FMOD_INIT_NORMAL, nullptr);//FMOD_INIT_SOFTWARE_HRTF//FMOD_INIT_NORMAL
         CheckFMOD(f_result);
-        /* f_result = audio->createDSPByType(dsp_list.at(dsp_ind), &fft);
-        CheckFMOD(f_result);
-        f_result = fft->setParameter(FMOD_DSP_OSCILLATOR_TYPE, fft_type);
-        CheckFMOD(f_result);
-        f_result = fft->setParameter(FMOD_DSP_OSCILLATOR_RATE, fft_freq);
-        CheckFMOD(f_result);
-        f_result = fft->setActive(false);
-        CheckFMOD(f_result); */
+
         sprintf(st, "Ready :");
         ui->MStatus->setText(trUtf8(st));
     }
@@ -246,12 +235,16 @@ MWindow::~MWindow()
     if (audio) audio->release();
     if (dsp_list) delete dsp_list;
     if (dsp_name) delete dsp_name;
+
     DelItems();
+
     delete sz22x22;
     delete sz16x16;
     delete tbl;
     delete ui;
+
     if (tmr > 0) killTimer(tmr);
+
     if (st) free(st);
 }
 //--------------------------------------------------------------------------------
@@ -455,6 +448,7 @@ void MWindow::open_list()
         fil.close();
     } else ui->MStatus->setText(tr("Error open playlist file ") + *nm);
     free(str);
+
     flag = false;
     if (list.size() > 0) list += *ls;
     else {
@@ -700,7 +694,6 @@ void MWindow::GotoPos(int pos)
 {
     start_play_tick = static_cast<uint32_t>(pos);
     channel->setPosition(start_pos + ( static_cast<uint32_t>(pos) * static_cast<uint32_t>(time_interval)), FMOD_TIMEUNIT_MS);
-//audio->update();
 }
 //--------------------------------------------------------------------------------
 void MWindow::SetGain(int aten)
@@ -708,7 +701,6 @@ void MWindow::SetGain(int aten)
     gain = aten;
     gain /= (time_interval * 10);
     channel->setVolume(gain);
-//audio->update();
 }
 //--------------------------------------------------------------------------------
 void MWindow::play_media()
@@ -718,7 +710,7 @@ void MWindow::play_media()
         if (audio) {
             tbl->selectRow(list_ind);
 
-            QByteArray namef(filename.toLocal8Bit());// namef.clear(); namef.append(filename);
+            QByteArray namef(filename.toLocal8Bit());
             char *uk = namef.data();
             if (!isStream)
                 f_result = audio->createSound(static_cast<const char *>(uk), FMOD_SOFTWARE, exinfo, &sound);
@@ -808,7 +800,6 @@ void MWindow::pause_media()
 {
     pause = !pause;
     channel->setPaused(pause);
-//audio->update();
     QSize *sz;
     if (pause) sz = sz22x22; else sz = sz16x16;
     ui->pushButtonPause->setIconSize(*sz);
@@ -821,7 +812,6 @@ void MWindow::mute_media()
 {
     mute = !mute;
     channel->setMute(mute);
-//audio->update();
     QSize *sz;
     if (mute) {
         sz = sz22x22;

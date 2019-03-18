@@ -22,7 +22,7 @@ bool d_s_p = true;//with dsp effects
     setlocale(LC_ALL,"UTF8");
 
     if (argc>1) {
-        if (!strcmp(argv[1], "sound")) pmode = false;
+        if (!strcmp(argv[1], "stream")) pmode = true;
         if (argc>2) {
             if (!strcmp(argv[2], "dsp")) d_s_p = true;
         }
@@ -31,7 +31,7 @@ bool d_s_p = true;//with dsp effects
     try {
         QApplication music(argc, argv);
 
-        MWindow wnd(NULL, pmode, d_s_p);
+        MWindow wnd(nullptr, pmode, d_s_p);
 
         wnd.show();
 
@@ -63,9 +63,9 @@ bool d_s_p = true;//with dsp effects
             if (c_err & 0x40) {
                 char tmps[32]={0};
                 cerr << "FMODex: You have old version :";
-                mkstr(htonl((int)er.fmod_code) , tmps);
+                mkstr(htonl(static_cast<int>(er.fmod_code)) , tmps);
                 cerr << tmps << ", need version : ";
-                mkstr(htonl((int)FMOD_VERSION) , tmps);
+                mkstr(htonl(static_cast<int>(FMOD_VERSION)) , tmps);
                 cerr << tmps << endl;
             }
         } else cerr << "Unknown Error (" << c_err << ")\n";

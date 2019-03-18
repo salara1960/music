@@ -44,7 +44,7 @@ Support next play effects (DSP type):
 
 ## Required
 ```
-- Qt5 framework + IDE Qt Creator 3.5.1
+- Qt5 framework + IDE Qt Creator
 - fmodex api library ver.4.X (from http://www.fmod.org/download)
 ```
 

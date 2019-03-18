@@ -142,7 +142,10 @@ public slots:
 private:
     //const char *ver = "2.3";
     //const char *ver = "2.3.1";//11.12.2018
-    const char *ver = "2.4";//30.01.2019 minor changes for new Qt version (5.12.0)
+    //const char *ver = "2.4.1";//30.01.2019 minor changes for new Qt version (5.12.0)
+    //const char *ver = "2.4.2";//12.02.2019 minor changes for new Qt version (5.12.1)
+    const char *ver = "2.4.3";//18.03.2019 minor changes (remove temp. notes)
+
     const char *ttip_head = "<html><head/><body><p><span style='font-size:8pt; font-style:italic; color:#0000ff';>";
     const char *ttip_tail = "</span></p></body></html";
     const float echo_delay = 250.0;//250ms
