@@ -8,7 +8,7 @@ void mkstr(int n, char *s)
 {
     if (!s) return;
 
-    size_t sz = sizeof(int);
+    const size_t sz = 4;
     char *sta = static_cast<char *>(calloc(1, sz << 2));// *4
     if (sta) {
         memset(s, 0, strlen(s));
@@ -90,10 +90,12 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
 #endif
 
     ui->setupUi(this);
-    this->setFixedSize(this->size());
+//    this->setFixedSize(this->size());
 
     MyError = 0;      //Code error for catch block
     st = nullptr;     //pointer to temp char_string
+    layout = nullptr;
+    sizeGrip = nullptr;
 
     filename.clear();
     list.clear();
@@ -225,7 +227,7 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
     ui->vSlider->setValue(time_interval * 5);
     connect(ui->vSlider, SIGNAL(valueChanged(int)), this, SLOT(SetGain(int)));
 
-    setWindowTitle("Audio player");
+    setWindowTitle("Music player");
 
 }
 //--------------------------------------------------------------------------------
@@ -243,9 +245,27 @@ MWindow::~MWindow()
     delete tbl;
     delete ui;
 
+    if (layout) delete layout;
+    if (sizeGrip) delete sizeGrip;
+
     if (tmr > 0) killTimer(tmr);
 
     if (st) free(st);
+}
+//--------------------------------------------------------------------------------
+void MWindow::resizeEvent(QResizeEvent *e)
+{
+    if (tbl) {
+        QRect *rr = new QRect(this->ui->wida->geometry());
+
+        rr->setWidth(rr->width()-10);
+        rr->setHeight(rr->height()-10);
+        rr->setX(rr->x() - 8);
+        rr->setY(rr->y() - 8);
+        tbl->setGeometry(*rr);
+
+        delete rr;
+    }
 }
 //--------------------------------------------------------------------------------
 void MWindow::set_dsp_type()
@@ -326,7 +346,7 @@ void MWindow::About()
 
     sprintf(st+strlen(st), "used : Qt v.%s + FMODex API v.", QT_VERSION_STR);
     uint32_t v = htonl(static_cast<uint32_t>(fmod_ver));
-    size_t dl = sizeof(int);
+    const size_t dl = sizeof(int);
     unsigned char mas[dl], fst = 1;
     memcpy(&mas[0], &v, dl);
     for (size_t i = 0; i < dl; i++) {
@@ -499,7 +519,7 @@ void MWindow::MkList()
         delete tbl;
         tbl = nullptr;
     }
-    tbl = new QTableWidget(this);
+    tbl = new QTableWidget(this->ui->wida);
 
     QPalette *pal = new QPalette(this->ui->MStatus->palette());
     tbl->setPalette(*pal);
@@ -509,9 +529,13 @@ void MWindow::MkList()
     tbl->setFont(*ft);
     delete ft;
 
-    QRect *rr = new QRect(this->geometry());
-    int max_width = rr->width() - 20;
-    tbl->setGeometry(0, ui->menubar->geometry().height() - 1, max_width, rr->height() - 96);//-86);//80
+    QRect *rr = new QRect(this->ui->wida->geometry());
+    int max_width = rr->width()-10;
+    rr->setWidth(max_width);
+    rr->setHeight(rr->height()-10);
+    rr->setX(rr->x() - 8);
+    rr->setY(rr->y() - 8);
+    tbl->setGeometry(*rr);
     delete rr;
 
     tbl->setRowCount(list.size());
@@ -542,8 +566,18 @@ void MWindow::MkList()
     }
     delete lt;
     delete tmp;
+/**/
+    tbl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//    tbl->setWindowFlags(Qt::SubWindow);
+//    //QSizeGrip *
+//            sizeGrip = new QSizeGrip(tbl);
+//    //QGridLayout *
+//            layout = new QGridLayout(tbl);
+//    layout->addWidget(sizeGrip, 0,0,2,2,Qt::AlignBottom | Qt::AlignRight);
+/**/
     connect(tbl, SIGNAL(cellClicked(int,int)), this, SLOT(RowNum(int, int)));
     tbl->show();
+    tbl->update();
 }
 //--------------------------------------------------------------------------------
 void MWindow::list_media()

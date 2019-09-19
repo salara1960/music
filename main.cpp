@@ -45,7 +45,7 @@ bool d_s_p = true;//with dsp effects
     // - 0x10 - bad pointer
     // - 0x20 - FMOD error
     // - 0x40 - old version fmodex
-    catch (MWindow::TheError (er)) {
+    catch (MWindow::TheError(er)) {
         c_err = er.code;
         if ((c_err > 0) && (c_err <= 0x40)) {
             if (c_err & 1) {
@@ -61,7 +61,7 @@ bool d_s_p = true;//with dsp effects
                                    << FMOD_ErrorString(er.fmod_code)
                                    << endl;
             if (c_err & 0x40) {
-                char tmps[32]={0};
+                char tmps[32] = {0};
                 cerr << "FMODex: You have old version :";
                 mkstr(htonl(static_cast<int>(er.fmod_code)) , tmps);
                 cerr << tmps << ", need version : ";

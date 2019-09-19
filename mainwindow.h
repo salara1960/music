@@ -36,6 +36,8 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QSizeGrip>
+#include <QtWidgets/QGridLayout>
 
 //********************************************************************************
 
@@ -113,6 +115,9 @@ public:
     FMOD_RESULT CheckFMOD(FMOD_RESULT);
     void DelItems();
 
+protected:
+    virtual void resizeEvent(QResizeEvent *);
+
 signals:
     void cstoped();
     void contmenu(int);
@@ -144,7 +149,8 @@ private:
     //const char *ver = "2.3.1";//11.12.2018
     //const char *ver = "2.4.1";//30.01.2019 minor changes for new Qt version (5.12.0)
     //const char *ver = "2.4.2";//12.02.2019 minor changes for new Qt version (5.12.1)
-    const char *ver = "2.4.3";//18.03.2019 minor changes (remove temp. notes)
+    //const char *ver = "2.4.3";//18.03.2019 minor changes (remove temp. notes)
+    const char *ver = "2.5";//19.09.2019 minor changes : main window size update
 
     const char *ttip_head = "<html><head/><body><p><span style='font-size:8pt; font-style:italic; color:#0000ff';>";
     const char *ttip_tail = "</span></p></body></html";
@@ -177,6 +183,9 @@ private:
     QTableWidget *tbl;
 
     ContMenu *contm;
+
+    QSizeGrip *sizeGrip;
+    QGridLayout *layout;
 
 };
 
