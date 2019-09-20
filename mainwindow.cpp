@@ -258,13 +258,17 @@ void MWindow::resizeEvent(QResizeEvent *e)
     if (tbl) {
         QRect *rr = new QRect(this->ui->wida->geometry());
 
-        rr->setWidth(rr->width()-10);
+        int maxw = rr->width()-10;
+        rr->setWidth(maxw);
         rr->setHeight(rr->height()-10);
         rr->setX(rr->x() - 8);
         rr->setY(rr->y() - 8);
+
         tbl->setGeometry(*rr);
 
         delete rr;
+
+        if (tbl->columnWidth(0) < maxw) tbl->setColumnWidth(0, maxw);
     }
 }
 //--------------------------------------------------------------------------------
