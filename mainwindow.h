@@ -38,6 +38,8 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QSizeGrip>
 #include <QtWidgets/QGridLayout>
+#include <QSystemTrayIcon>
+
 
 //********************************************************************************
 
@@ -143,6 +145,13 @@ public slots:
     void RowNum(int, int);
     void set_dsp_type();
     void select_cont_menu(int);
+    //tray
+    void changeEvent(QEvent*);
+    void closeEvent(QCloseEvent *);
+    void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
+    void trayActionExecute();
+    void setTrayIconActions();
+    void showTrayIcon();
 
 private:
     //const char *ver = "2.3";
@@ -151,7 +160,8 @@ private:
     //const char *ver = "2.4.2";//12.02.2019 minor changes for new Qt version (5.12.1)
     //const char *ver = "2.4.3";//18.03.2019 minor changes (remove temp. notes)
     //const char *ver = "2.5";//19.09.2019 minor changes : main window size update
-    const char *ver = "2.5.1";//20.09.2019 minor changes in ui
+    //const char *ver = "2.5.1";//20.09.2019 minor changes in ui
+    const char *ver = "2.6";//26.10.2019 major changes : add icon try mode
 
     const char *ttip_head = "<html><head/><body><p><span style='font-size:8pt; font-style:italic; color:#0000ff';>";
     const char *ttip_tail = "</span></p></body></html";
@@ -187,6 +197,12 @@ private:
 
     QSizeGrip *sizeGrip;
     QGridLayout *layout;
+    //tray
+    QMenu *trayIconMenu;
+    QAction *minA;
+    QAction *maxA;
+    QAction *quitA;
+    QSystemTrayIcon *trayIcon;
 
 };
 

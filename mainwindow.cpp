@@ -3,6 +3,12 @@
 
 //--------------------------------------------------------------------------------
 const int max_st = 2048;
+
+const QString main_pic    = "png/main.png";
+
+const QString hide_pic    = "png/hide.png";
+const QString show_pic    = "png/show.png";
+const QString close_pic   = "png/close.png";
 //--------------------------------------------------------------------------------
 void mkstr(int n, char *s)
 {
@@ -91,6 +97,9 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
 
     ui->setupUi(this);
 //    this->setFixedSize(this->size());
+
+    this->setTrayIconActions();
+    this->showTrayIcon();
 
     MyError = 0;      //Code error for catch block
     st = nullptr;     //pointer to temp char_string
@@ -864,3 +873,69 @@ void MWindow::mute_media()
 #endif
 }
 //--------------------------------------------------------------------------------
+//**************************************************************************************
+//                            Tray
+//**************************************************************************************
+void MWindow::showTrayIcon()
+{
+    trayIcon = new QSystemTrayIcon(this);
+    QIcon trayImage(main_pic);
+    trayIcon->setIcon(trayImage);
+    trayIcon->setContextMenu(trayIconMenu);
+
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+                this, SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
+
+    trayIcon->show();
+}
+//-------------------------------------------------------------------------------------
+void MWindow::trayActionExecute()
+{
+    //QMessageBox::information(this, "TrayIcon", "Тестовое сообщение. Замените вызов этого сообщения своим кодом.");
+}
+//-------------------------------------------------------------------------------------
+void MWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (static_cast<int>(reason)) {
+        case QSystemTrayIcon::Trigger:
+        case QSystemTrayIcon::DoubleClick:
+            this->showNormal();
+        break;
+    }
+}
+//-------------------------------------------------------------------------------------
+void MWindow::setTrayIconActions()
+{
+    minA  = new QAction(QIcon(hide_pic), "Hide", this);
+    maxA  = new QAction(QIcon(show_pic), "Show", this);
+    quitA = new QAction(QIcon(close_pic),"Quit", this);
+
+
+    connect(minA, SIGNAL(triggered()),  this, SLOT(hide()));
+    connect(maxA, SIGNAL(triggered()),  this, SLOT(showNormal()));
+    connect(quitA, SIGNAL(triggered()), qApp, SLOT(quit()));
+
+    trayIconMenu = new QMenu(this);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(minA);
+    trayIconMenu->addAction(maxA);
+    trayIconMenu->addAction(quitA);
+    //trayIconMenu->setStyleSheet(QString::fromUtf8("background-color: rgb(100, 100, 100);"));
+}
+//-------------------------------------------------------------------------------------
+void MWindow::changeEvent(QEvent *event)
+{
+    QMainWindow::changeEvent(event);
+    if (event->type() == QEvent::WindowStateChange) {
+        if (isMinimized()) this->hide();
+    }
+}
+//-------------------------------------------------------------------------------------
+void MWindow::closeEvent(QCloseEvent *evt)
+{
+    if (trayIcon->isVisible()) {
+        this->hide();
+        evt->ignore();
+    }
+}
+//**************************************************************************************

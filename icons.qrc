@@ -16,6 +16,9 @@
         <file>png/dsp.png</file>
         <file>png/dsp_music.png</file>
         <file>png/media_audio.png</file>
+        <file>png/hide.png</file>
+        <file>png/show.png</file>
+        <file>png/close.png</file>
     </qresource>
 </RCC>
 
