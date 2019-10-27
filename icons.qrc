@@ -19,6 +19,8 @@
         <file>png/hide.png</file>
         <file>png/show.png</file>
         <file>png/close.png</file>
+        <file>png/eyeHide.png</file>
+        <file>png/eyeShow.png</file>
     </qresource>
 </RCC>
 

@@ -6,8 +6,8 @@ const int max_st = 2048;
 
 const QString main_pic    = "png/main.png";
 
-const QString hide_pic    = "png/hide.png";
-const QString show_pic    = "png/show.png";
+const QString hide_pic    = "png/eyeHide.png";
+const QString show_pic    = "png/eyeShow.png";
 const QString close_pic   = "png/close.png";
 //--------------------------------------------------------------------------------
 void mkstr(int n, char *s)
