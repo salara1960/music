@@ -3,12 +3,12 @@
 
 //--------------------------------------------------------------------------------
 const int max_st = 2048;
-
+#ifdef WITH_TRAY
 const QString main_pic    = "png/main.png";
-
 const QString hide_pic    = "png/eyeHide.png";
 const QString show_pic    = "png/eyeShow.png";
 const QString close_pic   = "png/close.png";
+#endif
 //--------------------------------------------------------------------------------
 void mkstr(int n, char *s)
 {
@@ -97,10 +97,10 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
 
     ui->setupUi(this);
 //    this->setFixedSize(this->size());
-
+#ifdef WITH_TRAY
     this->setTrayIconActions();
     this->showTrayIcon();
-
+#endif
     MyError = 0;      //Code error for catch block
     st = nullptr;     //pointer to temp char_string
     layout = nullptr;
@@ -347,15 +347,21 @@ void MWindow::About()
     sprintf(st, "\nMusic player version %s\n", ver);
 
 
-    sprintf(st+strlen(st), "    Mode play ");
-    if (isStream) sprintf(st+strlen(st), "'Stream'");
-            else  sprintf(st+strlen(st), "'Sound'");
+    strcat(st, "    Mode play ");
+    if (isStream) strcat(st, "'Stream'");
+            else  strcat(st, "'Sound'");
 
     if (dsp) {
         QByteArray *darr = new QByteArray(dsp_name->at(dsp_ind).toLocal8Bit());
-        sprintf(st+strlen(st), "\n    DSP '%s'\n", darr->data());
+        sprintf(st+strlen(st), "\n    DSP '%s'", darr->data());
         delete darr;
     }
+
+#ifdef WITH_TRAY
+    strcat(st, "\n    with TRAY mode\n");
+#else
+    strcat(st, "\n    withOut TRAY mode\n");
+#endif
 
     sprintf(st+strlen(st), "used : Qt v.%s + FMODex API v.", QT_VERSION_STR);
     uint32_t v = htonl(static_cast<uint32_t>(fmod_ver));
@@ -876,6 +882,7 @@ void MWindow::mute_media()
 //**************************************************************************************
 //                            Tray
 //**************************************************************************************
+#ifdef WITH_TRAY
 void MWindow::showTrayIcon()
 {
     trayIcon = new QSystemTrayIcon(this);
@@ -938,4 +945,5 @@ void MWindow::closeEvent(QCloseEvent *evt)
         evt->ignore();
     }
 }
+#endif
 //**************************************************************************************

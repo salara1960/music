@@ -4,6 +4,8 @@
 //#define TRACE
 //#define DBG
 
+#undef WITH_TRAY
+
 #include <iostream>
 #include <string.h>
 #include <time.h>
@@ -38,8 +40,9 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QSizeGrip>
 #include <QtWidgets/QGridLayout>
-#include <QSystemTrayIcon>
-
+#ifdef WITH_TRAY
+    #include <QSystemTrayIcon>
+#endif
 
 //********************************************************************************
 
@@ -146,13 +149,14 @@ public slots:
     void set_dsp_type();
     void select_cont_menu(int);
     //tray
+#ifdef WITH_TRAY
     void changeEvent(QEvent*);
     void closeEvent(QCloseEvent *);
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void trayActionExecute();
     void setTrayIconActions();
     void showTrayIcon();
-
+#endif
 private:
     //const char *ver = "2.3";
     //const char *ver = "2.3.1";//11.12.2018
@@ -198,12 +202,13 @@ private:
     QSizeGrip *sizeGrip;
     QGridLayout *layout;
     //tray
+#ifdef WITH_TRAY
     QMenu *trayIconMenu;
     QAction *minA;
     QAction *maxA;
     QAction *quitA;
     QSystemTrayIcon *trayIcon;
-
+#endif
 };
 
 #endif // MAINWINDOW_H
