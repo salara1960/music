@@ -96,7 +96,7 @@ MWindow::MWindow(QWidget *parent, bool pm, bool dp) : QMainWindow(parent), ui(ne
 #endif
 
     ui->setupUi(this);
-//    this->setFixedSize(this->size());
+
 #ifdef WITH_TRAY
     this->setTrayIconActions();
     this->showTrayIcon();
@@ -278,6 +278,15 @@ void MWindow::resizeEvent(QResizeEvent *e)
         delete rr;
 
         if (tbl->columnWidth(0) < maxw) tbl->setColumnWidth(0, maxw);
+    }
+}
+//--------------------------------------------------------------------------------
+void MWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Return) {
+        if (tbl) {
+            RowNum(tbl->currentRow(), 0);
+        }
     }
 }
 //--------------------------------------------------------------------------------
@@ -595,6 +604,8 @@ void MWindow::MkList()
 //    layout->addWidget(sizeGrip, 0,0,2,2,Qt::AlignBottom | Qt::AlignRight);
 /**/
     connect(tbl, SIGNAL(cellClicked(int,int)), this, SLOT(RowNum(int, int)));
+
+
     tbl->show();
     tbl->update();
 }

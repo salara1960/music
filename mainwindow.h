@@ -4,7 +4,7 @@
 //#define TRACE
 //#define DBG
 
-#undef WITH_TRAY
+#define WITH_TRAY
 
 #include <iostream>
 #include <string.h>
@@ -114,14 +114,19 @@ public:
     explicit MWindow(QWidget *parent = nullptr, bool pm = true, bool dp = false);
     ~MWindow();
 
-    void timerEvent(QTimerEvent *);
     void stop_play();
     void MkList();
     FMOD_RESULT CheckFMOD(FMOD_RESULT);
     void DelItems();
 
 protected:
-    virtual void resizeEvent(QResizeEvent *);
+    virtual void timerEvent(QTimerEvent *) override;
+    virtual void resizeEvent(QResizeEvent *) override;
+    virtual void keyPressEvent(QKeyEvent *) override;
+#ifdef WITH_TRAY
+    virtual void changeEvent(QEvent *) override;
+    virtual void closeEvent(QCloseEvent *) override;
+#endif
 
 signals:
     void cstoped();
@@ -148,15 +153,15 @@ public slots:
     void RowNum(int, int);
     void set_dsp_type();
     void select_cont_menu(int);
+
     //tray
 #ifdef WITH_TRAY
-    void changeEvent(QEvent*);
-    void closeEvent(QCloseEvent *);
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void trayActionExecute();
     void setTrayIconActions();
     void showTrayIcon();
 #endif
+
 private:
     //const char *ver = "2.3";
     //const char *ver = "2.3.1";//11.12.2018
@@ -165,7 +170,8 @@ private:
     //const char *ver = "2.4.3";//18.03.2019 minor changes (remove temp. notes)
     //const char *ver = "2.5";//19.09.2019 minor changes : main window size update
     //const char *ver = "2.5.1";//20.09.2019 minor changes in ui
-    const char *ver = "2.6";//26.10.2019 major changes : add icon try mode
+    //const char *ver = "2.6";//26.10.2019 major changes : add icon try mode
+    const char *ver = "2.7";//18.11.2020 major changes : add keyPressed event support
 
     const char *ttip_head = "<html><head/><body><p><span style='font-size:8pt; font-style:italic; color:#0000ff';>";
     const char *ttip_tail = "</span></p></body></html";
@@ -201,6 +207,7 @@ private:
 
     QSizeGrip *sizeGrip;
     QGridLayout *layout;
+
     //tray
 #ifdef WITH_TRAY
     QMenu *trayIconMenu;
@@ -209,6 +216,7 @@ private:
     QAction *quitA;
     QSystemTrayIcon *trayIcon;
 #endif
+
 };
 
 #endif // MAINWINDOW_H

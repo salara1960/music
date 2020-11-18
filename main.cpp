@@ -1,3 +1,4 @@
+#include <QLockFile>
 #include "mainwindow.h"
 #include <errno.h>
 
@@ -30,6 +31,13 @@ bool d_s_p = true;//with dsp effects
 
     try {
         QApplication music(argc, argv);
+
+        QLockFile lockFile(QDir::temp().absoluteFilePath("music.lock"));
+        if (!lockFile.tryLock(100)) {
+            QMessageBox::warning(nullptr, "Attention !", "Program already started");
+
+            return 1;
+        }
 
         MWindow wnd(nullptr, pmode, d_s_p);
 
